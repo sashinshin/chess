@@ -33,6 +33,13 @@ body {
 }
 
 img {
+    position: absolute;
+    align-self: center;
     height: 50px;
     width: 50px;
+}
+.square span {
+    /* justify-self: start; */
+    align-self: flex-end;
+
 }
