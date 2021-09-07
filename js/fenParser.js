@@ -1,5 +1,5 @@
 // Parses Forsyth–Edwards Notation
-export const FENparser = (FEN) => {
+const fenParser = (FEN) => {
     const regexGeneral = /([a-z1-9]*)\/([a-z1-9]*)\/([a-z1-9]*)\/([a-z1-9]*)\/([a-z1-9]*)\/([a-z1-9]*)\/([a-z1-9]*)\/([a-z1-9]*)/gi;
     const fenSplit = regexGeneral.exec(FEN);
     const board = []
@@ -20,3 +20,5 @@ export const FENparser = (FEN) => {
 
     return board;
 };
+
+export default fenParser;

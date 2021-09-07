@@ -1,5 +1,5 @@
-import { renderPieces } from "./renderPieces";
-import { FENparser } from "./fenParser";
+import renderPieces from './renderPieces.js';
+import FENparser from './fenParser.js';
 
 // Variables
 const squares = [...document.querySelectorAll('.square')];
@@ -81,7 +81,7 @@ const renderAlgebraicNotation = (square) => {
 const init = () => {
     squares.forEach((square, index) => {
         renderAlgebraicNotation(square);
-        renderPieces(square, index);
+        renderPieces(square, boardState[index]);
         addPieceListener(square, index);
     });
 }

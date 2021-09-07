@@ -44,9 +44,11 @@ const pieceParser = (key) => {
     return imgElement;
 };
 
-export const renderPieces = (square, index) => {
-    if (boardState[index] !== null) {
-        const pieceElement = pieceParser(boardState[index])
+const renderPieces = (square, currentPiece) => {
+    if (currentPiece !== null) {
+        const pieceElement = pieceParser(currentPiece)
         square.appendChild(pieceElement)
     }
 };
+
+export default renderPieces;
