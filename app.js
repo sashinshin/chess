@@ -3,18 +3,16 @@ const squares = [...document.querySelectorAll('.square')];
 const newGameFEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR';
 const startGameFEN = 'rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R';
 
-let fen;
-
 // Parses Forsyth–Edwards Notation
 const FENparser = (FEN) => {
     const regexGeneral = /([a-z1-9]*)\/([a-z1-9]*)\/([a-z1-9]*)\/([a-z1-9]*)\/([a-z1-9]*)\/([a-z1-9]*)\/([a-z1-9]*)\/([a-z1-9]*)/gi;
     const fenSplit = regexGeneral.exec(FEN);
     const board = []
+
     for (let i = 1; i < 9; i++) {
-        console.log(fenSplit[i]);
-        for (let j = 0; j < fenSplit[i].length; j++) {
+        for (let j = 0; j < fenSplit[i].length; j++) {           
             const pieceRegex = /[rnbqkp]/i;
-            console.log(pieceRegex.test(fenSplit[i][j]));
+
             if (pieceRegex.test(fenSplit[i][j])) {
                 board.push(fenSplit[i][j]);
             } else {
@@ -22,20 +20,19 @@ const FENparser = (FEN) => {
                     board.push(null);
                 }
             }
-            console.log(fenSplit[i][j]);
         }
     }
-    console.log(board);
-    fen = board;
-}
 
-FENparser(startGameFEN);
+    return board;
+};
 
-console.log(squares);
+const boardState = FENparser(newGameFEN);
+console.log(boardState);
 
-
+// Render pieces
 const pieceParser = (key) => {
     const imgElement = document.createElement('img');
+    imgElement.setAttribute('type', key.toLowerCase())
     switch (key) {
         case 'r':
             imgElement.src = './images/rd.png';
@@ -77,30 +74,44 @@ const pieceParser = (key) => {
             break;
     }
     return imgElement;
+};
+
+const renderPieces = (square, index) => {
+    if (boardState[index] !== null) {
+        const pieceElement = pieceParser(boardState[index])
+        square.appendChild(pieceElement)
+    }
+};
+
+
+// Add event listeners
+const pawn = (event) => {
+    event.target.classList.add('selected');
 }
 
-const renderPieces = () => {
-    console.log(fen[1]);
-    squares.forEach((square, index) => {
-        if (fen[index] !== null) {
-            const pieceElement = pieceParser(fen[index])
-            square.appendChild(pieceElement)
-            console.log(square);
-            console.log(index);
-
-        }
-    })
+const addPieceListener = (square, index) => {
+    console.log(square);
+    console.log(boardState[index]);
+    if(boardState[index] !== null) {
+        square.addEventListener('click', pawn);
+    }
 }
-
-renderPieces();
 
 // Render algebraic notation to squares
-const renderAlgebraicNotation = () => {
-    squares.forEach(square => {
-        const id = document.createElement('span');
-        id.textContent = square.id;
-        // console.log(square.id);
-        square.appendChild(id);
+const renderAlgebraicNotation = (square) => {
+    const id = document.createElement('span');
+    id.textContent = square.id;
+    square.appendChild(id);
+}
+
+// Initialize game
+const init = () => {
+    squares.forEach((square, index) => {
+        renderAlgebraicNotation(square);
+        renderPieces(square, index);
+        addPieceListener(square, index);
     });
 }
-renderAlgebraicNotation();
+
+
+init();

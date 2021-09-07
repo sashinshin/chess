@@ -32,6 +32,10 @@ body {
     background-color: brown;
 }
 
+.selected {
+    background: orange;
+}
+
 img {
     position: absolute;
     align-self: center;
