@@ -32,7 +32,7 @@ console.log(boardState);
 // Render pieces
 const pieceParser = (key) => {
     const imgElement = document.createElement('img');
-    imgElement.setAttribute('type', key.toLowerCase())
+    imgElement.setAttribute('type', key)
     switch (key) {
         case 'r':
             imgElement.src = './images/rd.png';
@@ -85,15 +85,64 @@ const renderPieces = (square, index) => {
 
 
 // Add event listeners
-const pawn = (event) => {
-    event.target.classList.add('selected');
+
+
+const deselect = event => {
+    // squares.forEach((square, index) => {
+    //     addPieceListener(square, index);
+    // });
+
+    const allSquares = [...document.querySelectorAll('.square')];
+    allSquares.forEach((square, index) => {
+        addPieceListener(square, index);
+    });
+
+
+    console.log("in deselect");
+    console.log(event.target);
+    event.target.classList.remove('selected');
+    event.target.removeEventListener('click', deselect);
+    console.log(squares);
+
+    event.target.addEventListener('click', select);
 }
 
+const select = event => {
+    const allSquares = [...document.querySelectorAll('.square')];
+    console.log("in select");
+
+
+
+    mouseout(event);
+    event.target.addEventListener('click', deselect)
+    event.target.classList.add('selected');
+
+    console.log(event.target);
+
+    allSquares.forEach(square => {
+
+        const newSquare = square.cloneNode(true);
+        if (event.target === square.childNodes[1]) {
+            newSquare.classList.remove('hover');
+            newSquare.addEventListener('click', deselect);
+        }
+        //console.log(square.cloneNode(true));
+        square.replaceWith(newSquare);
+    });
+
+}
+
+
+const mouseover = event => event.target.classList.add('hover');
+const mouseout = event => event.target.classList.remove('hover');
+
 const addPieceListener = (square, index) => {
-    console.log(square);
-    console.log(boardState[index]);
-    if(boardState[index] !== null) {
-        square.addEventListener('click', pawn);
+    if (boardState[index] !== null) {
+        console.log("hello in addpiecelistener");
+        square.addEventListener('click', select);
+        square.addEventListener('mouseover', mouseover);
+        square.addEventListener('mouseout', mouseout);
+
     }
 }
 
@@ -112,6 +161,5 @@ const init = () => {
         addPieceListener(square, index);
     });
 }
-
 
 init();

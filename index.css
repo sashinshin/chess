@@ -32,8 +32,12 @@ body {
     background-color: brown;
 }
 
-.selected {
+.hover {
     background: orange;
+}
+
+.selected {
+    background: green;
 }
 
 img {
