@@ -1,14 +1,14 @@
 import renderPieces from './renderPieces.js';
-import FENparser from './fenParser.js';
+import fenParser from './fenParser.js';
 
 // Variables
 const squares = [...document.querySelectorAll('.square')];
-const newGameFEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR';
+const newGameFEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 const startedGameFEN = 'rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R';
 
 
-const boardState = FENparser(newGameFEN);
-console.log(boardState);
+const game = fenParser(newGameFEN);
+console.log(game);
 
 // Add event listeners
 const deselect = event => {
@@ -35,13 +35,11 @@ const select = event => {
     const allSquares = [...document.querySelectorAll('.square')];
     console.log("in select");
 
-
-
-    mouseout(event);
     event.target.addEventListener('click', deselect)
     event.target.classList.add('selected');
 
-    console.log(event.target);
+
+    console.log(event.target.id);
 
     allSquares.forEach(square => {
 
@@ -61,7 +59,8 @@ const mouseover = event => event.target.classList.add('hover');
 const mouseout = event => event.target.classList.remove('hover');
 
 const addPieceListener = (square, index) => {
-    if (boardState[index] !== null) {
+ 
+    if (game.boardState[index] !== null && square.childNodes[1].id === game.activeColor) {
         console.log("hello in addpiecelistener");
         square.addEventListener('click', select);
         square.addEventListener('mouseover', mouseover);
@@ -77,11 +76,20 @@ const renderAlgebraicNotation = (square) => {
     square.appendChild(id);
 }
 
+// Render pieces
+console.log(game.boardState);
+
+game.boardState.forEach(row => {
+    for (let i = 0; i < row.length; i++) {
+        console.log(row[i]);
+    }
+});
+
 // Initialize game
 const init = () => {
     squares.forEach((square, index) => {
         renderAlgebraicNotation(square);
-        renderPieces(square, boardState[index]);
+        renderPieces(square, game.boardState[index]);
         addPieceListener(square, index);
     });
 }
