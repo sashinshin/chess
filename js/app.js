@@ -2,55 +2,75 @@ import renderPieces from './renderPieces.js';
 import fenParser from './fenParser.js';
 
 // Variables
-const squares = [...document.querySelectorAll('.square')];
 const newGameFEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 const startedGameFEN = 'rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R';
 
 
 const game = fenParser(newGameFEN);
-console.log(game);
+
+const boardRef = [
+    ['a8', 'b8', 'c8', 'd8', 'e8', 'f8', 'g8', 'h8'],
+    ['a7', 'b7', 'c7', 'd7', 'e7', 'f7', 'g7', 'h7'],
+    ['a6', 'b6', 'c6', 'd6', 'e6', 'f6', 'g6', 'h6'],
+    ['a5', 'b5', 'c5', 'd5', 'e5', 'f5', 'g5', 'h5'],
+    ['a4', 'b4', 'c4', 'd4', 'e4', 'f4', 'g4', 'h4'],
+    ['a3', 'b3', 'c3', 'd3', 'e3', 'f3', 'g3', 'h3'],
+    ['a2', 'b2', 'c2', 'd2', 'e2', 'f2', 'g2', 'h2'],
+    ['a1', 'b1', 'c1', 'd1', 'e1', 'f1', 'g1', 'h1'],
+]
+
 
 // Add event listeners
 const deselect = event => {
-    // squares.forEach((square, index) => {
-    //     addPieceListener(square, index);
-    // });
+    console.log("in deselect");
+    let squareIndex = 0;
+    const squares = [...document.querySelectorAll('.square')];
 
-    const allSquares = [...document.querySelectorAll('.square')];
-    allSquares.forEach((square, index) => {
-        addPieceListener(square, index);
+    game.boardState.forEach(rank => {
+
+        for (let file = 0; file < rank.length; file++) {
+
+            addPieceListener(squares[squareIndex], rank[file]);
+            squareIndex++
+        }
     });
 
-
-    console.log("in deselect");
-    console.log(event.target);
+    console.log(event.target.parentNode);
     event.target.classList.remove('selected');
-    event.target.removeEventListener('click', deselect);
-    console.log(squares);
+    event.target.parentNode.removeEventListener('click', deselect);
+    console.log(event.target);
 
-    event.target.addEventListener('click', select);
 }
 
 const select = event => {
-    const allSquares = [...document.querySelectorAll('.square')];
-    console.log("in select");
+    const squares = [...document.querySelectorAll('.square')];
 
     event.target.addEventListener('click', deselect)
     event.target.classList.add('selected');
 
+    event.target.parentNode.classList.remove('hover');
+    console.log(event.target.parentNode.rank);
+    console.log(event.target.parentNode.file);
+    console.log(event.target.parentNode.id);
 
-    console.log(event.target.id);
+    //console.log(boardRef[event.target.parentNode.rank][event.target.parentNode.file]);
 
-    allSquares.forEach(square => {
 
+
+    squares.forEach(square => {
+        
         const newSquare = square.cloneNode(true);
-        if (event.target === square.childNodes[1]) {
-            newSquare.classList.remove('hover');
+        
+        if (event.target === square.childNodes[1] ) {
+
             newSquare.addEventListener('click', deselect);
         }
-        //console.log(square.cloneNode(true));
+
         square.replaceWith(newSquare);
     });
+
+    //console.log(event.target);
+    //event.target.addEventListener('click', deselect);
 
 }
 
@@ -58,10 +78,10 @@ const select = event => {
 const mouseover = event => event.target.classList.add('hover');
 const mouseout = event => event.target.classList.remove('hover');
 
-const addPieceListener = (square, index) => {
+const addPieceListener = (square, piece) => {
  
-    if (game.boardState[index] !== null && square.childNodes[1].id === game.activeColor) {
-        console.log("hello in addpiecelistener");
+    if (piece !== null && square.childNodes[1].id === game.activeColor) {
+
         square.addEventListener('click', select);
         square.addEventListener('mouseover', mouseover);
         square.addEventListener('mouseout', mouseout);
@@ -72,26 +92,35 @@ const addPieceListener = (square, index) => {
 // Render algebraic notation to squares
 const renderAlgebraicNotation = (square) => {
     const id = document.createElement('span');
+
     id.textContent = square.id;
     square.appendChild(id);
 }
 
-// Render pieces
-console.log(game.boardState);
-
-game.boardState.forEach(row => {
-    for (let i = 0; i < row.length; i++) {
-        console.log(row[i]);
-    }
-});
+// Add coordinate reference
+const coordRef = (square, rank, file) => {
+    square.rank = rank;
+    square.file = file;
+}
 
 // Initialize game
 const init = () => {
-    squares.forEach((square, index) => {
-        renderAlgebraicNotation(square);
-        renderPieces(square, game.boardState[index]);
-        addPieceListener(square, index);
+    let squareIndex = 0;
+    const squares = [...document.querySelectorAll('.square')];
+
+    game.boardState.forEach((rank, index) => {
+
+        for (let file = 0; file < rank.length; file++) {
+
+            coordRef(squares[squareIndex], index, file);
+            renderAlgebraicNotation(squares[squareIndex]);
+            renderPieces(squares[squareIndex], rank[file]);
+            addPieceListener(squares[squareIndex], rank[file]);
+            squareIndex++
+        }
     });
 }
 
 init();
+
+
