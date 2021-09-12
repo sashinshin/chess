@@ -40,6 +40,10 @@ body {
     background: green;
 }
 
+.movable {
+    background: lightgreen;
+}
+
 img {
     position: absolute;
     align-self: center;

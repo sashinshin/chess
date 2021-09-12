@@ -16,6 +16,7 @@ const fenParser = (FEN) => {
         enPassant,
         halfmove,
         fullmove,
+        unavailableSquares: [],
     }
 
     console.log(piecePosition);
